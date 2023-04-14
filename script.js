@@ -1,3 +1,12 @@
+// Registration
+
+const form = document.getElementById('form');
+const username = document.getElementById('username');
+const email = document.getElementById('email');
+const password = document.getElementById('password');
+const password2 = document.getElementById('password2');
+const registrationForm = document.querySelector('.registration');
+
 const scoreBoard = document.querySelector('.score');
 const levelBoard = document.querySelector('.level');
 const countdownBoard = document.querySelector('.countdown');
@@ -10,6 +19,78 @@ const modalDescription = document.querySelector('.modal_description');
 const modalTitle = document.querySelector('.modal_title');
 const wrapper = document.querySelector('.wrapper');
 
+let error = false;
+
+
+
+function checkInputs() {
+    // trim to remove the whitespaces
+    const usernameValue = username.value.trim();
+    const emailValue = email.value.trim();
+    const passwordValue = password.value.trim();
+    const password2Value = password2.value.trim();
+
+    if (usernameValue === '') {
+        setErrorFor(username, 'Username cannot be blank');
+    } else {
+        setSuccessFor(username);
+    }
+
+    if (emailValue === '') {
+        setErrorFor(email, 'Email cannot be blank');
+    } else if (!isEmail(emailValue)) {
+        setErrorFor(email, 'Not a valid email');
+    } else {
+        setSuccessFor(email);
+    }
+
+    if (passwordValue === '') {
+        setErrorFor(password, 'Password cannot be blank');
+    } else {
+        setSuccessFor(password);
+    }
+
+    if (password2Value === '') {
+        setErrorFor(password2, 'Password2 cannot be blank');
+    } else if (passwordValue !== password2Value) {
+        setErrorFor(password2, 'Passwords does not match');
+    } else {
+        setSuccessFor(password2);
+    }
+}
+
+function setErrorFor(input, message) {
+    error = true;
+    const formControl = input.parentElement;
+    const small = formControl.querySelector('small');
+    formControl.className = 'form-control error';
+    small.innerText = message;
+}
+
+function setSuccessFor(input) {
+    error = false;
+    const formControl = input.parentElement;
+    formControl.className = 'form-control success';
+}
+
+function isEmail(email) {
+    return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+}
+
+form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    checkInputs();
+    if (error == false) {
+        registrationForm.classList.add('hidden');
+        startBtn.classList.remove('hidden');
+
+    }
+});
+
+
+// Game
+
 let timeUp = false;
 let timeLimit = 20000;
 let score = 0;
@@ -19,6 +100,7 @@ let level = 1;
 function startGame() {
     renderMonsterAndBackground(level);
     scoreBoard.classList.remove('hidden');
+    monster.classList.remove('hidden');
     showRestartBtn();
     countdown = timeLimit / 1000;
     scoreBoard.textContent = 0;
@@ -31,16 +113,18 @@ function startGame() {
     setTimeout(function () {
         timeUp = true;
     }, timeLimit);
-    const startCountdown = ()=>{setInterval(function () {
-        countdown -= 1;
-        countdownBoard.textContent = countdown;
-        if (countdown < 0) {
-            countdown = 0;
-            clearInterval(startCountdown);
-            countdownBoard.textContent = 'Times Up';
-        }
-    }, 1000);}
-    startCountdown()
+    const startCountdown = () => {
+        setInterval(function () {
+            countdown -= 1;
+            countdownBoard.textContent = countdown;
+            if (countdown < 0) {
+                countdown = 0;
+                clearInterval(startCountdown);
+                countdownBoard.textContent = 'Times Up';
+            }
+        }, 1000);
+    };
+    startCountdown();
 
 
     restartBtn.addEventListener('click', restart);
@@ -85,7 +169,7 @@ function startGame() {
         levelBoard.textContent = level;
         scoreBoard.textContent = score;
     }
-    function renderMonsterAndBackground(levelForAdding,levelForRemove) {
+    function renderMonsterAndBackground(levelForAdding, levelForRemove) {
         monster.classList.add(`monster${levelForAdding}`);
         monster.classList.remove(`monster${levelForRemove}`);
         wrapper.classList.add(`level${levelForAdding}`);
@@ -99,7 +183,7 @@ function startGame() {
             showModal("Congratulation", "You win");
             showNextLevelBtn();
         }
-       
+
         console.log(score);
     }
     function restart() {
@@ -110,27 +194,27 @@ function startGame() {
         if (level <= 1) {
             level = 1;
         }
-        startCountdown()
+        startCountdown();
         rerenderScoreAndLevel(level, score);
         console.log("restart", level);
-        renderMonsterAndBackground(level,level+1);
+        renderMonsterAndBackground(level, level + 1);
     }
     function nextLevel() {
         countdown = timeLimit / 1000;
         score = 0;
         level++;
-       
-        if(level<6){
+
+        if (level < 6) {
             hideModal();
             rerenderScoreAndLevel(level, score);
-            renderMonsterAndBackground(level,level-1);
-        }else{
-            showModal("Thats All","Thank you for playing")
-        hideNextLevelBtn()
-        hideRestartBtn()
-        console.log("done");
+            renderMonsterAndBackground(level, level - 1);
+        } else {
+            showModal("Thats All", "Thank you for playing");
+            hideNextLevelBtn();
+            hideRestartBtn();
+            console.log("done");
         }
-        
+
     }
 }
 startBtn.addEventListener('click', startGame);

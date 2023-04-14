@@ -11,13 +11,45 @@
 
 <body>
     <div class="wrapper">
+        <div class="registration">
+
+            <div class="container">
+                <div class="header">
+                    <h2>Create Account</h2>
+                </div>
+                <form id="form" class="form">
+                    <div class="form-control">
+                        <label>Username</label>
+                        <input type="text" placeholder="Username" id="username" />
+                        <small>Error message</small>
+                    </div>
+                    <div class="form-control">
+                        <label>Email</label>
+                        <input type="email" placeholder="email@mail.com" id="email" />
+                        <small>Error message</small>
+                    </div>
+                    <div class="form-control">
+                        <label>Password</label>
+                        <input type="password" placeholder="Password" id="password" />
+                        <small>Error message</small>
+                    </div>
+                    <div class="form-control">
+                        <label>Password check</label>
+                        <input type="password" placeholder="Password two" id="password2" />
+                        <small>Error message</small>
+                    </div>
+                    <button>Submit</button>
+                </form>
+            </div>
+        </div>
+
         <div class="score hidden"></div>
         <div class="level"></div>
         <div class="countdown"></div>
-        <button class="startBtn">START</button>
+        <button class="startBtn hidden">START</button>
         <button class="restartBtn hidden">RESTART</button>
         <div class="game">
-            <div class="monster"></div>
+            <div class="monster hidden"></div>
         </div>
         <div class="modal hidden">
             <div class="modal_content">
